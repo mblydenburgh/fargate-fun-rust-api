@@ -44,6 +44,14 @@ jobs:
         target:
           - x86_64-unknown-linux-musl
     steps:
+      - name: Wait for tests to succeed
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.ref }}
+          check-name: build
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
       - name: Checkout Code
         uses: actions/checkout@v2
 

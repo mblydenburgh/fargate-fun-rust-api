@@ -17,7 +17,7 @@ export class CdkStack extends cdk.Stack {
       memoryLimitMiB: 512,
       taskImageOptions: {
         image: ContainerImage.fromEcrRepository(
-          Repository.fromRepositoryArn(this, "ImageRepository", "image_repository"),
+          Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
           "latest"
         )
       }
