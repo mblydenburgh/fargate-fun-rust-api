@@ -1,8 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
-import { Cluster } from 'aws-cdk-lib/aws-ecs';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
+import { Cluster, ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -14,7 +14,13 @@ export class CdkStack extends cdk.Stack {
       cluster,
       cpu: 256,
       desiredCount: 2,
-      memoryLimitMiB: 512
+      memoryLimitMiB: 512,
+      taskImageOptions: {
+        image: ContainerImage.fromEcrRepository(
+          Repository.fromRepositoryArn(this, "ImageRepository", "image_repository"),
+          "latest"
+        )
+      }
     })
   }
 }
