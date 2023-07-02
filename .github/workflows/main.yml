@@ -39,7 +39,6 @@ jobs:
   deploy:
     name: Deploy Stack
     runs-on: ubuntu-latest
-    if: steps.build.outcome == "success"
     strategy:
       matrix:
         target:
