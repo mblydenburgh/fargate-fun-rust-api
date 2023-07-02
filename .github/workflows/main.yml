@@ -36,56 +36,31 @@ jobs:
         echo "Pushing image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-  deploy:
-    name: Deploy Stack
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        target:
-          - x86_64-unknown-linux-musl
-    steps:
-      - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.ref }}
-          check-name: build
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
 
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - name: Install Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
 
-      - name: Set AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: us-east-1
-
-      - name: Install Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-
-      - name: Install Stack Dependencies
-        working-directory: ./cdk
-        run: 'sudo npm ci'
+    - name: Install Stack Dependencies
+      working-directory: ./cdk
+      run: 'sudo npm ci'
       
-      - name: Install NPM
-        run: 'sudo apt update -y && sudo apt install nodejs npm -y'
+    - name: Install NPM
+      run: 'sudo apt update -y && sudo apt install nodejs npm -y'
 
-      - name: Install CDK CLI
-        working-directory: ./cdk
-        run: 'sudo npm install -g aws-cdk'
+    - name: Install CDK CLI
+      working-directory: ./cdk
+      run: 'sudo npm install -g aws-cdk'
       
-      - name: CDK Synth
-        working-directory: ./cdk
-        run: 'cdk synth'
+    - name: CDK Synth
+      working-directory: ./cdk
+      run: 'cdk synth'
 
-      - name: Run CDK Bootstrap
-        working-directory: ./cdk
-        run: 'cdk bootstrap aws://415023725722/us-east-1'
+    - name: Run CDK Bootstrap
+      working-directory: ./cdk
+      run: 'cdk bootstrap aws://415023725722/us-east-1'
 
-      - name: CDK Deploy
-        working-directory: ./cdk
-        run: 'cdk deploy --require-approval never'
+    - name: CDK Deploy
+      working-directory: ./cdk
+      run: 'cdk deploy --require-approval never'
