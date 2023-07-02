@@ -55,7 +55,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Install Node
-        working-directory: ./cdk
+        uses: actions/setup-node@v1
         with:
           node-version: 14
 
