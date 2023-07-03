@@ -19,7 +19,7 @@ export class CdkStack extends cdk.Stack {
       vpc
     })
 
-    new ApplicationLoadBalancedFargateService(this, "TestFargateService", {
+    const service = new ApplicationLoadBalancedFargateService(this, "TestFargateService", {
       cluster,
       cpu: 256,
       desiredCount: 2,
@@ -31,6 +31,7 @@ export class CdkStack extends cdk.Stack {
         )
       }
     })
+    service.targetGroup.configureHealthCheck({ path: "/health" })
   }
 }
 
