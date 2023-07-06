@@ -1,8 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
-import { Vpc } from 'aws-cdk-lib/aws-ec2';
+import { Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Cluster, ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
+import { Protocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Construct } from 'constructs';
 
 export class CdkStack extends cdk.Stack {
@@ -19,26 +20,42 @@ export class CdkStack extends cdk.Stack {
       vpc
     })
 
-    new ApplicationLoadBalancedFargateService(this, "TestFargateService1", {
+    // sample service using available test image from aws
+    //new ApplicationLoadBalancedFargateService(this, "TestFargateService1", {
+    //  cluster,
+    //  cpu: 256,
+    //  desiredCount: 1,
+    //  memoryLimitMiB: 512,
+    //  taskImageOptions: { image: ContainerImage.fromRegistry("amazon/amazon-ecs-sample") }
+    //})
+    
+    const securityGroup = new SecurityGroup(this, "ServiceSG", {
+      securityGroupName: "test-fargate-sg",
+      vpc,
+      allowAllOutbound: true
+    })
+    securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(8080))
+    securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(80))
+
+    const service = new ApplicationLoadBalancedFargateService(this, "TestRustFargateService", {
       cluster,
       cpu: 256,
-      desiredCount: 2,
+      securityGroups: [securityGroup],
+      desiredCount: 1,
       memoryLimitMiB: 512,
-      taskImageOptions: { image: ContainerImage.fromRegistry("amazon/amazon-ecs-sample") }
+      taskImageOptions: {
+        image: ContainerImage.fromEcrRepository(
+          Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
+          "latest"
+        )
+      }
     })
-//     const service = new ApplicationLoadBalancedFargateService(this, "TestFargateService", {
-//       cluster,
-//       cpu: 256,
-//       desiredCount: 2,
-//       memoryLimitMiB: 512,
-//       taskImageOptions: {
-//         image: ContainerImage.fromEcrRepository(
-//           Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
-//           "latest"
-//         )
-//       }
-//     })
-//     service.targetGroup.configureHealthCheck({ path: "/health" })
+    // Default is HTTP and port 80
+    service.targetGroup.configureHealthCheck({ 
+      path: "/health",
+      port: "8080",
+      protocol: Protocol.HTTPS
+    })
   }
 }
 
