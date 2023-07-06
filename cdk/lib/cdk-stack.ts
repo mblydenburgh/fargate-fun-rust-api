@@ -19,19 +19,26 @@ export class CdkStack extends cdk.Stack {
       vpc
     })
 
-    const service = new ApplicationLoadBalancedFargateService(this, "TestFargateService", {
+    new ApplicationLoadBalancedFargateService(this, "TestFargateService1", {
       cluster,
       cpu: 256,
       desiredCount: 2,
       memoryLimitMiB: 512,
-      taskImageOptions: {
-        image: ContainerImage.fromEcrRepository(
-          Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
-          "latest"
-        )
-      }
+      taskImageOptions: { image: ContainerImage.fromRegistry("amazon/amazon-ecs-sample") }
     })
-    service.targetGroup.configureHealthCheck({ path: "/health" })
+//     const service = new ApplicationLoadBalancedFargateService(this, "TestFargateService", {
+//       cluster,
+//       cpu: 256,
+//       desiredCount: 2,
+//       memoryLimitMiB: 512,
+//       taskImageOptions: {
+//         image: ContainerImage.fromEcrRepository(
+//           Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
+//           "latest"
+//         )
+//       }
+//     })
+//     service.targetGroup.configureHealthCheck({ path: "/health" })
   }
 }
 

@@ -40,7 +40,7 @@ jobs:
     - name: Install Node
       uses: actions/setup-node@v1
       with:
-        node-version: 14
+        node-version: 18
 
     - name: Install Stack Dependencies
       working-directory: ./cdk
