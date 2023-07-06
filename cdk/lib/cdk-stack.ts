@@ -3,6 +3,7 @@ import { Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Cluster, ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
+import { LoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancing';
 import { Protocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Construct } from 'constructs';
 
@@ -47,8 +48,12 @@ export class CdkStack extends cdk.Stack {
         image: ContainerImage.fromEcrRepository(
           Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
           "latest"
-        )
+        ),
+        containerPort: 8080
       }
+    })
+    service.loadBalancer.addListener("8080", {
+      port: 8080
     })
     // Default is HTTP and port 80
     service.targetGroup.configureHealthCheck({ 
