@@ -3,7 +3,6 @@ import { Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Cluster, ContainerImage } from 'aws-cdk-lib/aws-ecs';
 import { ApplicationLoadBalancedFargateService } from 'aws-cdk-lib/aws-ecs-patterns';
-import { LoadBalancer } from 'aws-cdk-lib/aws-elasticloadbalancing';
 import { Protocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Construct } from 'constructs';
 
@@ -21,7 +20,7 @@ export class CdkStack extends cdk.Stack {
       vpc
     })
 
-    // sample service using available test image from aws
+    // sample service using available test image from aws - this deploys ok
     //new ApplicationLoadBalancedFargateService(this, "TestFargateService1", {
     //  cluster,
     //  cpu: 256,
