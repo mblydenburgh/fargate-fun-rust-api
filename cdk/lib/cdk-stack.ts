@@ -34,8 +34,8 @@ export class CdkStack extends cdk.Stack {
       vpc,
       allowAllOutbound: true
     })
-    securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(8080))
-    securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(80))
+//     securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(8080))
+//     securityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(80))
 
     const service = new ApplicationLoadBalancedFargateService(this, "TestRustFargateService", {
       cluster,
@@ -47,19 +47,16 @@ export class CdkStack extends cdk.Stack {
         image: ContainerImage.fromEcrRepository(
           Repository.fromRepositoryName(this, "ImageRepository", "image_repository"),
           "latest"
-        ),
-        containerPort: 8080
+        )
       }
     })
-    service.loadBalancer.addListener("8080", {
-      port: 8080,
-      defaultTargetGroups: [service.targetGroup]
-    })
+    //service.loadBalancer.addListener("8080", {
+    //  port: 8080,
+    //  defaultTargetGroups: [service.targetGroup]
+    //})
     // Default is HTTP and port 80
     service.targetGroup.configureHealthCheck({ 
-      path: "/health",
-      port: "8080",
-      protocol: Protocol.HTTPS
+      path: "/health"
     })
   }
 }

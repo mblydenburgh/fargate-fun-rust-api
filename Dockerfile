@@ -24,5 +24,5 @@ RUN apt-get update -y \
 # Copy compile binary from the builder step to runtime step
 COPY --from=builder /app/target/release/fargate-fun-rust-api fargate-fun-rust-api
 ENV APP_ENV production
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["./fargate-fun-rust-api"]
