@@ -56,15 +56,15 @@ jobs:
     - name: CDK Synth
       working-directory: ./cdk
       env:
-        AWS_ACCOUNT: ${{ secrets.AWS_ACOUNT }}
+        AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       run: 'cdk synth'
 
     - name: Run CDK Bootstrap
       working-directory: ./cdk
-      run: 'cdk bootstrap aws://${{ secrets.AWS_ACOUNT }}/us-east-1'
+      run: 'cdk bootstrap aws://${{ secrets.AWS_ACCOUNT }}/us-east-1'
 
     - name: CDK Deploy
       working-directory: ./cdk
       env:
-        AWS_ACCOUNT: ${{ secrets.AWS_ACOUNT }}
+        AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
       run: 'cdk deploy --require-approval never'
