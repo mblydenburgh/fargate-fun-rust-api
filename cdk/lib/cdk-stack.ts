@@ -10,7 +10,7 @@ export class CdkStack extends cdk.Stack {
     super(scope, id, props);
 
     const vpc = Vpc.fromLookup(this, "VpcReference", {
-      vpcId: "vpc-0ed968b03f671abf6"
+      vpcId: "vpc-0c7acc4f117d4b18c"
     })
 
     const cluster = Cluster.fromClusterAttributes(this, "ClusterRef", {
