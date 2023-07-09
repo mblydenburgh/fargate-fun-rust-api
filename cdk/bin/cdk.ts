@@ -4,8 +4,8 @@ import * as cdk from 'aws-cdk-lib';
 import { CdkStack } from '../lib/cdk-stack';
 
 const app = new cdk.App();
-new CdkStack(app, 'CdkStack', {
-  env: { account: '415023725722', region: 'us-east-1' }
+new CdkStack(app, 'FargateFun', {
+  env: { account: process.env.AWS_ACCOUNT, region: 'us-east-1' }
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
